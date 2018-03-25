@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="./node_modules/web3/dist/web3.min.js"></script>
+        <link rel="stylesheet" href="Style_PwC.css" />
+        <title>Créer acteur</title>
+    </head>
+
+    <body>
+
+        <header> <!-- header of the page, same on every page of the website-->
+            <div>
+                <p class="boite_logos">
+                    <img hspace="5" src="logo_pwc.png" alt="Logo PwC" class="logo_base">
+                    <img hspace="5" src="logo_ethereum.png" alt="Logo ESILV" class="logo_base">
+                </p>
+            </div>
+
+            <div>
+                <h1 class="grand_titre">Ethereum supply chain traceability Proof-of-concept</h1>
+            </div>
+        </header>
+
+        <nav> <!-- navigation of the page, same on every page of the website-->
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="Creer_acteur.html">Créer un acteur</a></li>
+                <li><a href="info_lot.html">Informations sur un lot</a></li>
+                <li><a href="Creer_lot.html">Créer un lot</a></li>
+                <li><a href="Ajouter_etape.html">Ajouter une étape / certifier</a></li>
+            </ul>
+        </nav>
+
+        <div id="conteneur_colonne"> <!-- content of the page -->
+                        <label for="produit" class="col-lg-2 control-label">Votre Adresse :</label>
+                <input id="fromAddress" placeholder="from address" size="50">
+                <label for="produit" class="col-lg-2 control-label">Vous êtes :</label>
+                <input id="identity" placeholder="from identity" size="50">
+            <form>
+                <br>
+                <input id="adresse" type="text" class="question" required autocomplete="off">
+                <label for="adresse"><span>Adresse Ethereum de l'acteur</span></label>
+                <br>
+                <input id="nom" type="text" class="question" required autocomplete="off">
+                <label for="nom"><span>Nom de l'acteur</span></label>
+                <br>
+                <input id="privilege" type="text" class="question" required autocomplete="off">
+                <label for="privilege"><span>Privilèges</span></label>
+                <br><br>
+                <div><button type="submit" id="button_creer" class="button">Ajouter un acteur</button></div>
+                <br>
+                <div><button type="submit" id="button_modifier" class="button">Modifier un acteur</button></div>
+                <br>
+                <label for="produit" class="col-lg-2 control-label">Id Transaction</label>
+                <input id="id_transaction" size="50">
+            </form>
+            <br><br>
+        </div>
+
+        <footer> <!-- footer of the page, same on every page of the website-->
+            <br/>
+            <p>Copyright PwC France - Tous droits réservés</p>
+            <a href="#" class="button">Nous contacter !</a>
+            <br/><br/>
+        </footer>
+    
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        
+                <script type="text/javascript" >
+        if (typeof web3 !== 'undefined') 
+            {                                               //informations sur le port 8545
+                web3 = new Web3(web3.currentProvider);
+            } 
+            else 
+            {
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            }
+            web3.eth.defaultAccount = web3.eth.accounts[0];                                  //account en charge des transactions
+
+            document.getElementById('fromAddress').value = web3.eth.defaultAccount;
+
+
+            var PWCContract = web3.eth.contract(
+[
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_ref_produit",
+                "type": "string"
+            }
+        ],
+        "name": "trouver",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "inventaire",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "kill",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_ref_produit",
+                "type": "string"
+            },
+            {
+                "name": "_ref_lot",
+                "type": "string"
+            },
+            {
+                "name": "_lieu",
+                "type": "string"
+            },
+            {
+                "name": "_date",
+                "type": "string"
+            }
+        ],
+        "name": "Nouveau_Lot",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "Derniere_Clef",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "infos_utilisateur",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "clef_lot",
+                "type": "uint256"
+            },
+            {
+                "name": "_intitule",
+                "type": "string"
+            },
+            {
+                "name": "_lieu",
+                "type": "string"
+            },
+            {
+                "name": "_date",
+                "type": "string"
+            },
+            {
+                "name": "_nouveau_proprietaire",
+                "type": "address"
+            }
+        ],
+        "name": "Ajouter_Etape",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "utilisateur",
+                "type": "address"
+            }
+        ],
+        "name": "infos_acteurs",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_adresse",
+                "type": "address"
+            },
+            {
+                "name": "_nom",
+                "type": "string"
+            },
+            {
+                "name": "_privilege",
+                "type": "uint256"
+            }
+        ],
+        "name": "Nouvel_Acteur",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "clef_lot",
+                "type": "uint256"
+            },
+            {
+                "name": "utilisateur",
+                "type": "address"
+            }
+        ],
+        "name": "utilisateur_est_proprietaire",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "clef_lot",
+                "type": "uint256"
+            }
+        ],
+        "name": "info_produit",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "clef_lot",
+                "type": "uint256"
+            }
+        ],
+        "name": "histoire",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "Auchan",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_adresse",
+                "type": "address"
+            },
+            {
+                "name": "_nom",
+                "type": "string"
+            },
+            {
+                "name": "_privilege",
+                "type": "uint256"
+            }
+        ],
+        "name": "Modifier_Acteur",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }
+]
+            );
+
+            var PWC = PWCContract.at('0x08d1cc59f410c0181d60d9589287e3167f6905b0');          //adresse du smart contract sur la     blockchain
+            console.log(PWC);
+
+
+            
+            $("#button_creer").click(function () {
+
+                
+                PWC.Nouvel_Acteur($("#adresse").val(),$("#nom").val(),$("#privilege").val(), function(error, result){
+                if(!error)
+                    {
+                        document.getElementById('id_transaction').value = result;
+                        console.log(result);
+                    }
+                else
+                    console.error(error);
+            });
+                alert("Nouvel acteur ajouté");
+            });
+
+            $("#button_modifier").click(function () {
+
+                
+                document.getElementById('id_transaction').value = PWC.Modifier_Acteur($("#adresse").val(),$("#nom").val(),$("#privilege").val(), function(error, result){
+                if(!error)
+                    {
+                        document.getElementById('id_transaction').value = result;
+                        console.log(result);
+                    }
+                else
+                    console.error(error);
+            });
+                alert("Acteur modifié");
+            });
+             
+    
+        </script>
+    
+    </body>
+</html>
