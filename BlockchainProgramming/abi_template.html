@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="./node_modules/web3/dist/web3.min.js"></script>
+        <link rel="stylesheet" href="Style_PwC.css" />
+        <title>History</title>
+    </head>
+
+    <body>
+
+        <header> <!-- header of the page, same on every page of the website-->
+
+
+            <div>
+                <h1 class="grand_titre">ABI</h1>
+            </div>
+        </header>
+
+        <nav> <!-- navigation of the page, same on every page of the website-->
+            <ul>
+                <li><a href="#">Accueil</a></li>
+            </ul>
+        </nav>
+
+        <div id="conteneur_ligne"> <!-- content of the page -->
+            <div id="conteneur_colonne"> <!-- FORMULAIRE DE RECHERCHE LOT-->
+    			<form>
+                    
+                    <label for="produit" class="col-lg-2 control-label">Votre Adresse</label>
+                    <input id="fromAddress" size="50">
+                </form>
+
+            
+    	</div>
+
+    	<footer> <!-- footer of the page, same on every page of the website-->
+            <br/>
+            <a href="#" class="button">Nous contacter !</a>
+            <br/><br/>
+        </footer>
+		
+    	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js">
+    	</script>
+
+         <!-- SCRIPT DE CONNEXION A LA BLOCKCHAIN -->
+
+    	<!-- script to create new divisions in the timeline according to the length of the returned string -->
+    
+    	       <script type="text/javascript" >
+        if (typeof web3 !== 'undefined') 
+            {                                               //informations sur le port 8545
+                web3 = new Web3(web3.currentProvider);
+            } 
+            else 
+            {
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            }
+            web3.eth.defaultAccount = web3.eth.accounts[0];                                  //account en charge des transactions
+
+            document.getElementById('fromAddress').value = web3.eth.defaultAccount;
+
+
+            var PWCContract = web3.eth.contract(   );//ici abi du contrat
+
+            var Ctr = Contract.at('');          //adresse du smart contract sur la   blockchain
+            console.log(PWC);
+
+//ici le code des fonctions à appeler pour le smart contract
+    	
+        </script>
+	</body>
+</html>
