@@ -1,0 +1,10 @@
+pragma solidity ^0.4.19;
+
+
+contract POE{
+    bytes32 public sha_doc;
+
+    function POE(bytes32 _sha_doc) {
+        sha_doc = _sha_doc;
+    }
+}
