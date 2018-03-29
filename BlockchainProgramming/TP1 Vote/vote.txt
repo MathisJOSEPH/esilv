@@ -1,0 +1,119 @@
+contract Democracy {
+    
+    uint public votingTimeInMinutes ;
+    
+    // Propriétaire du contrat
+    address public owner;
+    
+    
+    // Les membres (tableau adresse / appartenance aux votants)
+    mapping (address => bool) public members;
+    
+    // Liste des propositions
+    Proposal[] proposals;
+    
+    // Definition de l'objet proposal
+    struct Proposal {
+        string description;
+        mapping (address => bool) voted;
+        bool[] votes;
+        uint end;
+        bool adopted;
+    }
+    
+    // modifier
+    modifier ownerOnly(){
+        if (msg.sender != owner){
+            throw;
+        }
+        _;
+    }
+    // Auth membre uniquement
+   modifier memberOnly(){
+        if (!members[msg.sender]){
+            throw;
+        }
+        _;
+    }
+
+    // Si la proposition correspondant à cet index n'est pas ouverte au vote, la fonction n'est pas exécutée
+    modifier isOpen(uint index) {
+        if(now > proposals[index].end) throw;
+        _;
+    }
+    
+    // Si la proposition correspondant à cet index est fermée au vote, la fonction est exécutée
+    modifier isClosed(uint index) {
+        if(now < proposals[index].end) throw;
+        _;
+    }
+    
+    // Si le compte (msg.sender) a déjà vôté pour cette proposition, la fonction n'est pas exécutée
+    modifier didNotVoteYet(uint index) {
+        if(proposals[index].voted[msg.sender]) throw;
+        _;
+    }
+
+    // Constructeur
+    function Democracy() {
+        owner = msg.sender;
+        setVotingTime(votingTimeInMinutes);
+    }
+    
+    // Fonction de modification du temps
+    function setVotingTime(uint newVotingTime) {
+        if(msg.sender != owner) throw;
+        votingTimeInMinutes = newVotingTime;
+    }
+    
+    // Ajout des membres
+    function addMember(address newMember) ownerOnly() {
+        members[newMember] = true;
+    }
+    
+    // Ajouter une proposition
+    function addProposal(string description) {
+        uint proposalID = proposals.length++;
+       
+        Proposal p = proposals[proposalID];
+        
+        // Donner la description
+        p.description = description;
+        
+        // Donner le moment de fin de vote
+        p.end = now + votingTimeInMinutes * 1 minutes;
+    }
+    
+     // Voter pour une proposition
+    function vote(uint index, bool vote) memberOnly() isOpen(index) didNotVoteYet(index) {
+        proposals[index].votes.push(vote);
+        proposals[index].voted[msg.sender] = true;
+    }
+    
+    // Obtenir le résultat d'un vote
+    function executeProposal(uint index) isClosed(index) {
+        uint yes;
+        uint no;
+        bool[] votes = proposals[index].votes;
+
+        // On compte les pour et les contre
+        for(uint counter = 0; counter < votes.length; counter++) {
+            if(votes[counter]) {
+                yes++;
+            } else {
+                no++;
+            }
+        }
+        if(yes > no) {
+           proposals[index].adopted = true; 
+        }
+    }
+ 
+    
+    //kill
+    function kill () ownerOnly(){
+        delete owner;
+        selfdestruct(msg.sender);
+    }
+
+}
